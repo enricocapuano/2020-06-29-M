@@ -21,6 +21,8 @@ public class Model {
 	private Map<Integer, Director> idMap;
 	private ImdbDAO dao;
 	private int somma = 0;
+	Director minimo;
+	int peso;
 	
 	public Model() {
 		dao = new ImdbDAO();
@@ -66,6 +68,8 @@ public class Model {
 	}
 	
 	public List<DirectorAdiacente> getPercorso(Director d, int max){
+		minimo = null;
+		peso = 0;
 		List<DirectorAdiacente> soluzione = new ArrayList<>();
 		cerca(d, soluzione, max);
 		return soluzione;
@@ -75,23 +79,22 @@ public class Model {
 		if(somma == max) {
 			return;
 		}
-		DefaultWeightedEdge minimo = new DefaultWeightedEdge();
-		for(DefaultWeightedEdge e : this.grafo.edgeSet()) {
+		
+		for(Director e : Graphs.neighborListOf(grafo, d)) {
 			if(minimo == null) {
 				minimo = e;
 			}
 			else {
-				if(grafo.getEdgeWeight(e) < grafo.getEdgeWeight(minimo)) {
+				if(grafo.getEdgeWeight(grafo.getEdge(d, e)) < peso) {
 					minimo = e;
 				}
 			}
 		}
-		int peso = (int) this.grafo.getEdgeWeight(minimo);	
-		Director dir = Graphs.getOppositeVertex(this.grafo, minimo, d);		
-		DirectorAdiacente ad = new DirectorAdiacente(dir, peso);
+		peso = (int) this.grafo.getEdgeWeight(grafo.getEdge(d, minimo));			
+		DirectorAdiacente ad = new DirectorAdiacente(minimo, peso);
 		somma += peso;
 		soluzione.add(ad);		
-		cerca(dir, soluzione, max);
+		cerca(minimo, soluzione, max);
 		soluzione.remove(ad);
 	}
 }

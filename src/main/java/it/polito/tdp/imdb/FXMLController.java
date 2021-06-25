@@ -75,7 +75,7 @@ public class FXMLController {
     @FXML
     void doRicorsione(ActionEvent event) {
     	txtResult.clear();
-    	Director partenza = boxRegista.getValue();
+    	
     	String massimo = txtAttoriCondivisi.getText();
     	if(massimo == "") {
     		txtResult.appendText("Inserire un numero massimo di attori condivisi");
@@ -88,6 +88,7 @@ public class FXMLController {
     		txtResult.appendText("Inserire un numero");
     		return;
     	}
+    	Director partenza = boxRegista.getValue();
     	List<DirectorAdiacente> adiacenti = model.getPercorso(partenza, max);
     	for(DirectorAdiacente d : adiacenti) {
     		txtResult.appendText(d.toString()+"\n");
